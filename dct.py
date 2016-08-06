@@ -107,12 +107,12 @@ def Merge(array, width, height):
     array = [a[:width] for a in array]
   return array
 
-def Split(array, width, height):
-  w, h = width*3, height
+def Split(array, width, height, n):
+  w, h = width*n, height
   if w % 4: w += 4 - w%4
   array = [array[i:i+w] for i in range(0,w*h,w)]
-  array = [a[:width*3] for a in array]
-  array = [[a[i::3] for a in array] for i in range(3)]
+  array = [a[:width*n] for a in array]
+  array = [[a[i::n] for a in array] for i in range(n)]
   array = [Generate(c, width, height) for c in array]
   return array
 
@@ -142,7 +142,7 @@ def EncodeFile(filename):
   print("  depth:", depth)
   
   print("Splitting channels:")
-  channels = Split(pixels, width, height)
+  channels = Split(pixels, width, height, int(depth/8))
   
   np = multiprocessing.cpu_count() ** 2
   print("Using", np, "processes")
@@ -178,7 +178,7 @@ def DecodeFile(filename):
   print("  depth:", depth)
   
   print("Splitting channels:")
-  channels = Split(pixels, width, height)
+  channels = Split(pixels, width, height, int(depth/8))
   
   np = multiprocessing.cpu_count() ** 2
   print("Using", np, "processes")
