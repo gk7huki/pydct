@@ -24,26 +24,26 @@ Quant_50 = [
   [49, 64, 78, 87, 103, 121, 120, 101],
   [72, 92, 95, 98, 112, 100, 103, 99]
 ]
+Cos_table = [
+  [math.cos((2*i+1)*j * math.pi/16) for j in range(8)] for i in range(8)
+]
+Root2_inv = 1 / math.sqrt(2)
 
 def ComputeDCT(a,u,v):
   r = 0;
   for i,j in [(i,j) for i in range(8) for j in range(8)]:
-    t1 = (2*i+1)*u * math.pi / 16
-    t2 = (2*j+1)*v * math.pi / 16
-    r += a[i][j] * math.cos(t1) * math.cos(t2)
-  if u == 0: r *= 1 / math.sqrt(2)
-  if v == 0: r *= 1 / math.sqrt(2)
+    r += a[i][j] * Cos_table[i][u] * Cos_table[j][v]
+  if u == 0: r *= Root2_inv
+  if v == 0: r *= Root2_inv
   r *= 0.25;
   return r
 
 def InverseDCT(a,i,j):
   r = 0;
   for u,v in [(u,v) for u in range(8) for v in range(8)]:
-    t1 = (2*i+1)*u * math.pi / 16
-    t2 = (2*j+1)*v * math.pi / 16
-    c = a[u][v] * math.cos(t1) * math.cos(t2)
-    if u == 0: c *= 1 / math.sqrt(2)
-    if v == 0: c *= 1 / math.sqrt(2)
+    c = a[u][v] * Cos_table[i][u] * Cos_table[j][v]
+    if u == 0: c *= Root2_inv
+    if v == 0: c *= Root2_inv
     r += c
   r *= 0.25;
   return round(r)
