@@ -13,6 +13,7 @@ import struct
 import array
 import zlib
 import time
+import multiprocessing
 
 Quant_50 = [
   [16, 11, 10, 16, 24, 40, 51, 61],
@@ -70,6 +71,12 @@ def Decode(array):
   array = [[InverseDCT(array,i,j) for j in range(8)] for i in range(8)]
   array = [[Unshift(c) for c in row] for row in array]
   return array
+
+def EncodePool(row):
+  return [Encode(a) for a in row]
+
+def DecodePool(row):
+  return [Decode(a) for a in row]
 
 ################################################################################
 
@@ -137,9 +144,13 @@ def EncodeFile(filename):
   print("Splitting channels:")
   channels = Split(pixels, width, height)
   
+  np = multiprocessing.cpu_count() ** 2
+  print("Using", np, "processes")
+  
   print("Encoding channels:", len(channels))
   t1 = time.time()
-  channels = [[[Encode(a) for a in row] for row in c] for c in channels]
+  with multiprocessing.Pool(np) as p:
+    channels = [p.map(EncodePool, c) for c in channels]
   t2 = time.time()
   print("  Time elapsed:", t2-t1)
   
@@ -169,9 +180,13 @@ def DecodeFile(filename):
   print("Splitting channels:")
   channels = Split(pixels, width, height)
   
+  np = multiprocessing.cpu_count() ** 2
+  print("Using", np, "processes")
+  
   print("Decoding channels:", len(channels))
   t1 = time.time()
-  channels = [[[Decode(a) for a in row] for row in c] for c in channels]
+  with multiprocessing.Pool(np) as p:
+    channels = [p.map(DecodePool, c) for c in channels]
   t2 = time.time()
   print("  Time elapsed:", t2-t1)
   
