@@ -36,22 +36,22 @@ Range_list = [(i,j) for i in range(8) for j in range(8)]
 Root2_inv = 1 / math.sqrt(2)
 
 def ComputeDCT(a,u,v):
-  r = 0;
+  r = 0
   for i,j in Range_list:
     r += a[i][j] * Cos_table[i][u] * Cos_table[j][v]
   if u == 0: r *= Root2_inv
   if v == 0: r *= Root2_inv
-  r *= 0.25;
+  r *= 0.25
   return r
 
 def InverseDCT(a,i,j):
-  r = 0;
+  r = 0
   for u,v in Range_list:
     c = a[u][v] * Cos_table[i][u] * Cos_table[j][v]
     if u == 0: c *= Root2_inv
     if v == 0: c *= Root2_inv
     r += c
-  r *= 0.25;
+  r *= 0.25
   return round(r)
 
 def Shift(c):
