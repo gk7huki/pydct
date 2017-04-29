@@ -5,6 +5,10 @@
 # Discrete Cosine Transform.
 # Written by Huki, file inception on 2016-08-04.
 #
+# Encode 24-bit or 32-bit bitmaps with DCT (and compress the result).
+# Use multiprocessing to utilize all CPU cores.
+# Optimized to be reasonably fast!
+#
 ################################################################################
 
 import os, sys
